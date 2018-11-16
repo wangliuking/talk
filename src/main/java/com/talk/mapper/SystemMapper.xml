@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.talk.dao.SystemDao">
+	<sql id="findSystem">
+		select * from table_system 
+	</sql>
+	<!-- 分页sql基本代码 -->
+	<sql id="pageSql">
+		from table_system
+	</sql>
+	<!-- 具体的分页语句 -->
+	<select id="getPageSystem" resultMap="systemBaseResultMap">
+		<trim prefix="select * " suffix="limit">
+			<include refid="pageSql"/>
+		</trim>
+		#{pageModel.startRow},#{pageModel.pageSize}
+	</select>
+	<!-- 统计需要分页的行数 -->
+	<select id="count" resultType="int">
+		select count(*) <include refid="pageSql"/>
+	</select>
+	
+	<!-- 查询全部系统参数 -->
+	<select id="getSystem" resultMap="systemBaseResultMap">
+			<include refid="findSystem"/>
+	</select>
+	
+	<!-- 系统参数更新 -->
+	<update id="updateSystem">
+		update table_system set callTime=#{callTime},pttOnTime=#{pttOnTime},pttSilentTime=#{pttSilentTime},gpsReportInterval=#{gpsReportInterval},
+		appHeartInterval=#{appHeartInterval},audioHeartInterval=#{audioHeartInterval},tcpListenPort=#{tcpListenPort},appVoicePort=#{appVoicePort},
+		bdId=#{bdId},bdListenPort=#{bdListenPort},bdVoicePort=#{bdVoicePort},gpsServerPort=#{gpsServerPort},
+		dbSynPort=#{dbSynPort},g729RecPath=#{g729RecPath},wavRecPath=#{wavRecPath}
+	</update>
+
+	<!-- 定义ResultMap -->
+	<resultMap id="systemBaseResultMap" type="com.talk.dto.System" autoMapping="true">
+		<!-- 定义列和java对象属性的对应关系 -->
+		<result column="callTime" property="callTime"/>
+		<result column="pttOnTime" property="pttOnTime"/>
+		<result column="pttSilentTime" property="pttSilentTime"/>
+		<result column="gpsReportInterval" property="gpsReportInterval"/>
+		<result column="appHeartInterval" property="appHeartInterval"/>
+		<result column="audioHeartInterval" property="audioHeartInterval"/>
+		<result column="tcpListenPort" property="tcpListenPort"/>
+		<result column="appVoicePort" property="appVoicePort"/>
+		<result column="bdId" property="bdId"/>
+		<result column="bdListenPort" property="bdListenPort"/>
+		<result column="bdVoicePort" property="bdVoicePort"/>
+		<result column="gpsServerPort" property="gpsServerPort"/>
+		<result column="dbSynPort" property="dbSynPort"/>
+		<result column="g729RecPath" property="g729RecPath"/>
+		<result column="wavRecPath" property="wavRecPath"/>
+	</resultMap>
+</mapper>

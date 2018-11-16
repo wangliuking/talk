@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.talk.dao.Group2BdDao">
+
+	<!-- 分页sql基本代码 -->
+	<sql id="pageSql">
+		from table_group2bd 
+		<if test="group2bd.group != null">
+			<where>
+				<if test="group2bd.group.groupId != null &amp;&amp; group2bd.group.groupId != ''">
+					groupId like concat('%',#{group2bd.group.groupId},'%')
+				</if>
+			</where>
+		</if>
+		order by groupId
+	</sql>
+	<!-- 具体的分页语句 -->
+	<select id="getGroup2BdListByPage" resultMap="Group2BdResultMap">
+		<trim prefix="select * " suffix="limit">
+			<include refid="pageSql"/>
+		</trim>
+		#{pageModel.startRow},#{pageModel.pageSize}
+	</select>
+	<!-- 统计需要分页的行数 -->
+	<select id="count" resultType="int">
+		select count(*) <include refid="pageSql"/>
+	</select>
+	<!-- 添加新的局向和组关系 -->
+	<insert id="save">
+		insert into table_group2bd(bdId,groupId) values(#{bdId},#{groupId})
+	</insert>
+	<!-- 修改局向和组的关联 -->
+	<update id="update">
+		update table_group2bd set bdId=#{bdId},groupId=#{groupId} where bdId=#{updateBdId} and groupId=#{updateGroupId}
+	</update>
+	<!-- 删除局向和组的关联 -->
+	<delete id="delete">
+		delete from table_group2bd where bdId=#{bdId} and groupId=#{groupId}
+	</delete>
+	<!-- 根据局向码和组ID查询是否有相同数据 -->
+	<select id="countId" resultType="int">
+		select count(*) from table_group2bd where bdId=#{bdId} and groupId=#{groupId}
+	</select>
+	<!-- 删除组时，查询所有同这个组关联的局向 -->
+	<select id="countBdIdByGroupId" resultType="int">
+		select count(*) from table_group2bd where groupId=#{groupId}
+	</select>
+	<!-- 删除局向时，查询所有同这个局向关联的组 -->
+	<select id="countGroupIdByBdId" resultType="map">
+		select groupId from table_group2bd where bdId=#{bdId}
+	</select>
+	
+	<!-- 定义ResultMap -->	
+	<resultMap id="Group2BdResultMap" type="com.talk.dto.Group2Bd">
+		<result property="id" column="id" javaType="int"/>
+		<!-- 配置关联表与用户的关系映射 -->
+		<association property="bureaudirection" column="bdId" javaType="com.talk.dto.Bureaudirection"
+		select="com.talk.dao.BureaudirectionDao.getBureaudirectionById"/>
+		<!-- 配置关联表与组的关系映射 -->
+		<association property="group" column="groupId" javaType="com.talk.dto.Group"
+		select="com.talk.dao.GroupDao.getGroupById"/>
+	</resultMap>
+
+</mapper>

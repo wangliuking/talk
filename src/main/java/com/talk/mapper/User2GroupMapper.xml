@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.talk.dao.User2GroupDao">
+	<!-- 具体的分页语句 -->
+	<select id="getUser2GroupListByPage" parameterType="map" resultType="map">
+		select a.*,b.userName,c.groupName from table_user2group as a LEFT JOIN table_user as b 
+		on a.userId=b.userId LEFT JOIN table_group as c on a.groupId=c.groupId where 1=1
+		<if test="userId != null and userId != ''">
+			and a.userId like concat('%',#{userId},'%')
+		</if>
+		ORDER BY a.id limit #{start},#{limit}
+	</select>
+	<!-- 统计需要分页的行数 -->
+	<select id="count" parameterType="map" resultType="int">
+		select count(*) from table_user2group as a LEFT JOIN table_user as b 
+		on a.userId=b.userId LEFT JOIN table_group as c on a.groupId=c.groupId where 1=1
+		<if test="userId != null and userId != ''">
+			and a.userId like concat('%',#{userId},'%')
+		</if>
+	</select>
+	<!-- 添加新的用户和组关系 -->
+	<insert id="save" parameterType="map">
+		insert into table_user2group(userId,groupId) values
+		<foreach collection="groupId" item="item" index="index" separator=","> 
+       		(#{userId},#{item})  
+		</foreach>
+	</insert>
+	<!-- 修改用户和组的关联 -->
+	<update id="update">
+		update table_user2group set userId=#{userId},groupId=#{groupId} where userId=#{updateUserId} and groupId=#{updateGroupId}
+	</update>
+	<!-- 删除用户和组的关联 -->
+	<delete id="delete">
+		delete from table_user2group where userId=#{userId} and groupId=#{groupId}
+	</delete>
+	<!-- 根据用户id删除所有关联 -->
+	<delete id="deleteByUserId">
+		delete from table_user2group where userId=#{userId}
+	</delete>
+	<!-- 根据组id删除所有关联 -->
+	<delete id="deleteByGroupId">
+		delete from table_user2group where groupId=#{groupId}
+	</delete>
+	<!-- 根据用户ID和组ID查询是否有相同数据(批量添加时) -->
+	<select id="countIdAdd" resultType="int" parameterType="map">
+		select count(*) from table_user2group where userId=#{userId} and groupId in (
+		<foreach collection="groupId" item="item" index="index"
+			separator=",">
+			#{item}
+		</foreach>
+		)
+	</select>
+	
+	<!-- 根据用户ID查询所有相关联的组 -->
+	<select id="selectGroupIdsByUserId" resultType="map">
+		select groupId from table_user2group where userId=#{userId}
+	</select>
+	
+	<!-- 根据用户ID和组ID查询是否有相同数据(更新时) -->
+	<select id="countIdUpdate" resultType="int" parameterType="map">
+		select count(*) from table_user2group where userId=#{userId} and groupId=#{groupId}
+	</select>
+	
+	<!-- 修改组时，查询是否有用户和组的关联 -->
+	<select id="countExistGroupId" resultType="int">
+		select count(*) from table_user2group where groupId=#{groupId}
+	</select>
+	
+	<!-- 修改组时，查询所有同这个组关联的用户 -->
+	<select id="userIdByGroupId" resultType="map">
+		select userId from table_user2group where groupId=#{groupId}
+	</select>
+	
+	<!-- 修改用户时，查询是否有用户和组的关联 -->
+	<select id="countExistUserId" resultType="int">
+		select count(*) from table_user2group where userId=#{userId}
+	</select>
+	<!-- 定义ResultMap -->	
+	<resultMap id="User2GroupResultMap" type="com.talk.dto.User2Group">
+		<result property="id" column="id" javaType="int"/>
+		<!-- 配置关联表与用户的关系映射 -->
+		<association property="user" column="userId" javaType="com.talk.dto.User"
+		select="com.talk.dao.UserDao.getUserById"/>
+		<!-- 配置关联表与组的关系映射 -->
+		<association property="group" column="groupId" javaType="com.talk.dto.Group"
+		select="com.talk.dao.GroupDao.getGroupById"/>
+	</resultMap>
+
+</mapper>

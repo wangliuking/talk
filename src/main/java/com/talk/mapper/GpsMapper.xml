@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.talk.dao.GpsDao">
+	<sql id="findGps">
+		select * from table_gps order by recvTime desc
+	</sql>
+	<!-- 分页sql基本代码 -->
+	<sql id="pageSql">
+		from table_gps order by recvTime desc
+	</sql>
+	<!-- 具体的分页语句 -->
+	<select id="getPageGps" resultMap="gpsBaseResultMap">
+		<trim prefix="select * " suffix="limit">
+			<include refid="pageSql"/>
+		</trim>
+		#{pageModel.startRow},#{pageModel.pageSize}
+	</select>
+	<!-- 统计需要分页的行数 -->
+	<select id="count" resultType="int">
+		select count(*) <include refid="pageSql"/>
+	</select>
+	
+	<!-- 查询全部gps记录 -->
+	<select id="getGps" resultMap="gpsBaseResultMap">
+			<include refid="findGps"/>
+	</select>
+	
+	<!-- 删除-->
+	<delete id="delete">
+		delete from table_gps where id=#{id}
+	</delete>
+	
+	<!-- 查询最近一分钟所有用户位置 将小于改成大于即最近一分钟-->
+	<select id="getUserPosition" resultType="map">
+		select a.*,b.userName from (select * from table_gps where recvTime &lt; DATE_SUB(NOW(),INTERVAL 1 MINUTE) ORDER BY
+		recvTime DESC) as a LEFT JOIN table_user as b on a.userId=b.userId GROUP BY a.userId
+	</select>
+
+	<!-- 定义ResultMap -->
+	<resultMap id="gpsBaseResultMap" type="com.talk.dto.Gps" autoMapping="true">
+		<!-- 定义列和java对象属性的对应关系 -->
+		<result column="id" property="id"/>
+		<result column="userId" property="userId"/>
+		<result column="longitude" property="longitude"/>
+		<result column="latitude" property="latitude"/>
+		<result column="type" property="type"/>
+		<result column="recvTime" property="recvTime"/>
+	</resultMap>
+</mapper>

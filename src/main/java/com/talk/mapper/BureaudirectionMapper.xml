@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.talk.dao.BureaudirectionDao">
+	<!-- 具体的分页语句 -->
+	<select id="getPageBureaudirection" parameterType="map" resultType="map">
+		select * from table_bureaudirection where 1=1
+		<if test="bdId != null and bdId != ''">
+			and bdId like concat('%',#{bdId},'%')
+		</if>
+		ORDER BY bdId limit #{start},#{limit}
+	</select>
+	<!-- 统计需要分页的行数 -->
+	<select id="count" resultType="int">
+		select count(*) from table_bureaudirection where 1=1
+		<if test="bdId != null and bdId != ''">
+			and bdId like concat('%',#{bdId},'%')
+		</if>
+	</select>
+	<!-- 新增局向的时候，查询是否有相同bdId -->
+	<select id="countBureaudirectionId" resultType="int">
+		select count(*) from table_bureaudirection where bdId=#{bdId}
+	</select>
+	<!-- 新增局向 -->
+	<insert id="save">
+		insert into table_bureaudirection(
+			bdId,address,csPort,voicePort,bdName) 
+		values
+		(#{bdId},#{address},#{csPort},#{voicePort},#{bdName})
+	</insert>
+	
+	<!-- 查询所有局向id-->
+	<select id="getAllBureaudirectionId" resultMap="bureaudirectionBaseResultMap">
+		select bdId from table_bureaudirection
+	</select>
+	
+	<!-- 根据编号查询局向数据 -->
+	<select id="getBureaudirectionById" resultMap="bureaudirectionBaseResultMap">
+		select * from table_bureaudirection where bdId = #{bdId}
+	</select>
+	
+	<!-- 局向信息更新 -->
+	<update id="updateBureaudirection">
+		update table_bureaudirection set bdId=#{bureaudirection.bdId},address=#{bureaudirection.address},csPort=#{bureaudirection.csPort},
+		voicePort=#{bureaudirection.voicePort},bdName=#{bureaudirection.bdName} where bdId=#{tempModel.tempBureaudirection}
+	</update>
+	
+	<!-- 删除操作-->
+	<delete id="deleteBureaudirection">
+		delete from table_bureaudirection where bdId=#{bdId}
+	</delete>
+
+	<!-- 定义ResultMap -->
+	<resultMap id="bureaudirectionBaseResultMap" type="com.talk.dto.Bureaudirection" autoMapping="true">
+		<!-- 定义列和java对象属性的对应关系 -->
+		<result column="bdId" property="bdId"/>
+		<result column="address" property="address"/>
+		<result column="csPort" property="csPort"/>
+		<result column="voicePort" property="voicePort"/>
+		<result column="bdName" property="bdName"/>
+	</resultMap>
+</mapper>

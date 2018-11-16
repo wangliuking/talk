@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.talk.dao.GroupDao">
+	<!-- 具体的分页语句 -->
+	<select id="getPageGroup" parameterType="map" resultType="map">
+		select * from table_group where 1=1
+		<if test="groupId != null and groupId != ''">
+			and groupId like concat('%',#{groupId},'%')
+		</if>
+		ORDER BY groupId limit #{start},#{limit}
+	</select>
+	<!-- 统计需要分页的行数 -->
+	<select id="count" resultType="int">
+		select count(*) from table_group where 1=1
+		<if test="groupId != null and groupId != ''">
+			and groupId like concat('%',#{groupId},'%')
+		</if>
+	</select>
+	<!-- 新增组数据的时候，查询是否有相同组Id -->
+	<select id="countGroupId" resultType="int">
+		select count(*) from table_group where groupId=#{groupId}
+	</select>
+	<!-- 新增组数据 -->
+	<insert id="save">
+		insert into table_group(
+			groupId,groupName,type,pttSilentTime,callTime,pttOnTime) 
+		values
+		(#{groupId},#{groupName},#{type},#{pttSilentTime},#{callTime},#{pttOnTime})
+	</insert>
+	
+	<!-- 查询所有组ID数据 -->
+	<select id="getAllGroupId" resultMap="groupBaseResultMap">
+		select * from table_group
+	</select>
+	
+	<!-- 分页查询组ID数据 -->
+	<select id="getAllGroupIdByPage" parameterType="map" resultType="map">
+		select * from table_group limit #{start},#{limit}
+	</select>
+	
+	<!-- 根据组编号查询数据 -->
+	<select id="getGroupById" resultMap="groupBaseResultMap">
+		select * from table_group where groupId = #{groupId}
+	</select>
+	
+	<!-- 组信息更新 -->
+	<update id="updateGroup">
+		update table_group set groupId=#{group.groupId},groupName=#{group.groupName},type=#{group.type},
+		pttSilentTime=#{group.pttSilentTime},callTime=#{group.callTime},pttOnTime=#{group.pttOnTime} where groupId=#{tempModel.tempGroup}
+	</update>
+	
+	<!-- 组删除操作-->
+	<delete id="deleteGroup">
+		delete from table_group where groupId=#{groupId}
+	</delete>
+	
+	<!-- 批量开组操作 -->
+	<insert id="insertBatch" parameterType="ArrayList">  
+    insert into table_group(groupId,groupName)  
+    values  
+    <foreach collection="list" item="obj" index="index" separator=","> 
+       (#{obj.groupId},#{obj.groupName})  
+	</foreach>  
+    </insert> 
+
+	<!-- 定义ResultMap -->
+	<resultMap id="groupBaseResultMap" type="com.talk.dto.Group" autoMapping="true">
+		<!-- 定义列和java对象属性的对应关系 -->
+		<result column="groupId" property="groupId"/>
+		<result column="groupName" property="groupName"/>
+		<result column="type" property="type"/>
+		<result column="pttSilentTime" property="pttSilentTime"/>
+		<result column="callTime" property="callTime"/>
+		<result column="pttOnTime" property="pttOnTime"/>
+	</resultMap>
+</mapper>

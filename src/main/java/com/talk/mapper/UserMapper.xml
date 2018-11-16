@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.talk.dao.UserDao">
+	<!-- 具体的分页语句 -->
+	<select id="getPageUser" parameterType="map" resultType="map">
+		select * from table_user where 1=1
+		<if test="userId != null and userId != ''">
+			and userId like concat('%',#{userId},'%')
+		</if>
+		ORDER BY userId limit #{start},#{limit}
+	</select>
+	<!-- 统计需要分页的行数 -->
+	<select id="count" resultType="int">
+		select count(*) from table_user where 1=1
+		<if test="userId != null and userId != ''">
+			and userId like concat('%',#{userId},'%')
+		</if>
+	</select>
+	<!-- 添加用户时统计是否有相同的用户id -->
+	<select id="countUserId" resultType="int">
+		select count(*) from table_user where userId=#{userId}
+	</select>
+	<!-- 查询所有用户ID数据 -->
+	<select id="getAllUserId" resultMap="userBaseResultMap">
+		select userId from table_user
+	</select>
+	
+	<!-- 根据用户名和密码查询用户 -->
+	<select id="getUserByUserIdAndByPassword" resultMap="userBaseResultMap">
+		select * from table_user where userId = #{userName} and password = #{password}
+	</select>
+	<!-- 根据用户编号查询用户数据 -->
+	<select id="getUserById" resultMap="userBaseResultMap">
+		select * from table_user where userId = #{userId}
+	</select>
+	
+	<!-- 判断用户名是否重复 -->
+	<select id="getUserByUserId" resultType="int">
+		select count(*) from table_user where userId = #{userId}
+	</select>
+	
+	<!-- 查询管理员 -->
+	<select id="getAdmin" resultMap="userBaseResultMap">
+		select * from table_user where userId = #{userId} and passwd = #{passwd} and level = #{level}
+	</select>
+	
+	<insert id="save">
+		insert into table_user(
+			userId,userName,password,authenticateCode,
+			priority,type,loginTime) 
+		values
+		(#{userId},#{userName},#{password},#{authenticateCode},#{priority},#{type},#{loginTime})
+	</insert>
+	
+	<!-- 用户更新 -->
+	<update id="updateUser">
+		update table_user set userId=#{user.userId},userName=#{user.userName},password=#{user.password},authenticateCode=#{user.authenticateCode},priority=#{user.priority},type=#{user.type} where userId=#{tempModel.temp}
+	</update>
+	
+	<!-- 超级管理员更新一个用户的访问权限 -->
+	<update id="powerUpdate">
+		update table_user set power=#{power} where userId=#{userId}
+	</update>
+	
+	<!-- 用户帐号删除操作 同步删除关联表的用户数据-->
+	<delete id="deleteUser">
+		delete from table_user where userId=#{userId}
+	</delete>
+	
+	<!-- 用户登录状态更新 -->
+	<update id="updateLogin">
+		update table_user set loginTime=SYSDATE(),loginStatus=1 where userId=#{userId}
+	</update>
+	
+	<!-- 用户注销 -->
+	<update id="updateLogout">
+		update table_user set loginStatus=0 where userId=#{userId}
+	</update>
+	
+	<!-- 查询该用户表所有信息，用于redis缓存 -->
+	<select id="getForRedis" resultMap="userBaseResultMap">
+		select * from table_user
+	</select>
+	
+	<!-- 批量开户操作 -->
+	<insert id="insertBatch" parameterType="ArrayList">  
+    insert into table_user(userId,userName)  
+    values  
+    <foreach collection="list" item="obj" index="index" separator=","> 
+       (#{obj.userId},#{obj.userName})  
+	</foreach>  
+    </insert> 
+	
+	<!-- 定义ResultMap -->
+	<resultMap id="userBaseResultMap" type="com.talk.dto.User" autoMapping="true">
+		<!-- 定义列和java对象属性的对应关系 -->
+		<result column="userId" property="userId"/>
+		<result column="userName" property="userName"/>
+		<result column="password" property="password"/>
+		<result column="authenticateCode" property="authenticateCode"/>
+		<result column="priority" property="priority"/>
+		<result column="type" property="type"/>
+		<result column="loginTime" property="loginTime"/>
+		<result column="loginStatus" property="loginStatus"/>
+		<result column="scanEn" property="scanEn"/>
+		<result column="browserType" property="browserType"/>
+		<result column="level" property="level"/>
+		<result column="power" property="power"/>
+	</resultMap>
+	
+	<!--导入excel -->
+	<insert id="insertExcel" parameterType="java.util.List">
+		INSERT INTO
+		table_user(userId,userName,password,authenticateCode,priority,type,loginTime,loginStatus,scanEn,browserType,level,power)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.userId},#{item.userName},#{item.password},#{item.authenticateCode},#{item.priority},#{item.type},#{item.loginTime},#{item.loginStatus},
+			#{item.scanEn},#{item.browserType},#{item.level},#{item.power})
+		</foreach>
+	</insert>
+</mapper>
