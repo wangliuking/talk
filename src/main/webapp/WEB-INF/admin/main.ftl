@@ -24,8 +24,25 @@
                     	  homePage:'11',// 当前显示的菜单id
                     	  menu:[{text:'系统管理',// 主菜单
                     	  items:[
-                    	         {id:'11',text:'呼叫信息管理',href:'${ctx}/admin/callInfo/callInfoList'}
-                    	         ]}]}];
+                    	         {id:'11',text:'用户管理',href:'${ctx}/admin/user/toUserList'},
+                    	         {id:'12',text:'系统参数管理',href:'${ctx}/admin/system/systemList'},
+                    	         {id:'13',text:'组管理',href:'${ctx}/admin/group/toGroupList'},
+                    	         {id:'14',text:'用户和组关联管理',href:'${ctx}/admin/user2group/toUser2groupList'},
+                    	         {id:'15',text:'地图信息',href:'${ctx}/test'},
+                    	         {id:'16',text:'GPS用户管理',href:'${ctx}/admin/gpsuser/gpsuserList'},
+                    	         {id:'17',text:'局向管理',href:'${ctx}/admin/bureaudirection/toBureaudirectionList'},
+                    	         {id:'18',text:'组和局向关联管理',href:'${ctx}/admin/group2bd/group2bdList'}
+                    	         ]}]},
+                       {id:'2',
+                    	  homePage:'21',
+                    	  menu:[{text:'业务管理',
+                    	  items:[
+                    	          {id:'21',text:'短信记录管理',href:'${ctx}/admin/sms/smsList'},
+                    	          {id:'22',text:'GPS数据管理',href:'${ctx}/admin/gps/gpsList'},
+                    	          {id:'23',text:'呼叫信息管理',href:'${ctx}/admin/callInfo/callInfoList'},
+                    	          {id:'24',text:'批量开户功能',href:'${ctx}/admin/user/toInsertBatch'},
+                    	          {id:'25',text:'app上传下载',href:'${ctx}/admin/app/appList'}
+                    	        ]}]}];
         new PageUtil.MainPage({
             modulesConfig : config
         });

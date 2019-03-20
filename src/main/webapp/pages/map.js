@@ -7,6 +7,7 @@ $(function(){
 	initMap();
 	setInterval(function() {
 		initMap();
+		console.log(count);
 		count++;
 	}, 20000);
 });
@@ -20,14 +21,14 @@ function initMap(){
 	    data: params ,
 	 success: function(data){
 	    	arr=data;
-	    	if(!initStatus){
-	    		 clearMarkers();
-	    		 showMarkers();
-	    	}	
 	    	if(initStatus){
 	    		start();
 	    		initStatus=false;
-	    	}	    	    	    	
+	    	}
+	    	if(!initStatus){
+	    		 clearMarkers();
+	    		 showMarkers();
+	    	}	    	    	
 	    } ,
 	    dataType: 'json'
 	});
@@ -36,7 +37,7 @@ function initMap(){
 function start(){
 	function Demo() { }  
 	 Demo.prototype.tileSize = new google.maps.Size(256, 256);//瓦片大小  
-	 Demo.prototype.maxZoom = 18;//允许最大缩放层级  
+	 Demo.prototype.maxZoom = 13;//允许最大缩放层级  
 	 Demo.prototype.minZoom = 10;//允许最小缩放层级  
 	 Demo.prototype.name = "地图";  
 	 Demo.prototype.getTile = function (coord, zoom, ownerDocument) {  
@@ -44,7 +45,7 @@ function start(){
 	   img.style.width = this.tileSize.width + "px";  
 	   img.style.height = this.tileSize.height + "px";  
 	   //定义瓦片的相对路径  
-	   var strURL = 'http://localhost:8080/expotile/GOOGLE/';  
+	   var strURL = 'expotile/';  
 	   //其中zoom为层级，x可以理解为该瓦片在整个地图中的列数，y为行数，图片格式下载的时候选择png或者jpg，我这里是png格式  
 	   strURL += zoom + "/" + coord.x + "/" + coord.y + '.png';  
 	   img.src = strURL;  
@@ -55,7 +56,7 @@ function start(){
 
 	//初始化参数
 	 var myOptions = {  
-	   center: new google.maps.LatLng(28.662604,87.13192), //地图中心坐标  
+	   center: new google.maps.LatLng(30.75143156,103.997046), //地图中心坐标  
 	   zoom: 10,    //地图层级  
 	   mapTypeControl: true,  //默认右上角显示地图名称  
 	   mapTypeControlOptions: {  
@@ -67,27 +68,14 @@ function start(){
 	 map.mapTypes.set('localMap', localMap);  
 	 map.setMapTypeId('localMap'); //设置默认显示的地图
 	 
-	 google.maps.event.addListener(map, 'click', function(event) {
-		  console.log(event.latLng);
-		 });
-	 
 	 //显示marker函数
 	 showMarkers();
 }
 
-
-
 function showMarkers(){
-	
 	for(var i=0;i<arr.length;i++){
-		var wgloc={};
-		wgloc.lat=arr[i].latitude;//纬度
-		wgloc.lng=arr[i].longitude;//经度
-		var lat=transformFromWGSToGCJ(wgloc).lat;
-		var lng=transformFromWGSToGCJ(wgloc).lng;
-		
 		 var marker = new google.maps.Marker({  
-		     position: new google.maps.LatLng(lat,lng-0.0064),
+		     position: new google.maps.LatLng(arr[i].latitude,arr[i].longitude),
 		     map: map,  
 		     title:arr[i].userName,
 		     animation:google.maps.Animation.DROP
@@ -124,68 +112,3 @@ function CheckImgExists(imgurl) {
      });
 
 }
-
-//偏移算法
-var pi = 3.14159265358979324;
-
-//
-// Krasovsky 1940
-//
-// a = 6378245.0, 1/f = 298.3
-// b = a * (1 - f)
-// ee = (a^2 - b^2) / a^2;
-var a = 6378245.0;
-var ee = 0.00669342162296594323;
-
-function outOfChina(lat, lon){
-    if (lon < 72.004 || lon > 137.8347)
-        return 1;
-    if (lat < 0.8293 || lat > 55.8271)
-        return 1;
-    return 0;
-}
-function transformLat(x,y){
-    var ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(x > 0 ? x:-x);
-    ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 *Math.sin(2.0 * x * pi)) * 2.0 / 3.0;
-    ret += (20.0 * Math.sin(y * pi) + 40.0 * Math.sin(y / 3.0 * pi)) * 2.0 / 3.0;
-    ret += (160.0 * Math.sin(y / 12.0 * pi) + 320 * Math.sin(y * pi / 30.0)) * 2.0 / 3.0;
-    return ret;
-}
-function transformLon(x,y){
-    var ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(x > 0 ? x:-x);
-    ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0 / 3.0;
-    ret += (20.0 * Math.sin(x * pi) + 40.0 * Math.sin(x / 3.0 * pi)) * 2.0 / 3.0;
-    ret += (150.0 * Math.sin(x / 12.0 * pi) + 300.0 * Math.sin(x / 30.0 * pi)) * 2.0 / 3.0;
-    return ret;
-}
-function transformFromWGSToGCJ(wgLoc)
-{
-    var mgLoc ={};
-    mgLoc.lat = 0;
-    mgLoc.lng = 0;
-    if (outOfChina(wgLoc.lat, wgLoc.lng))
-    {
-        mgLoc = wgLoc;
-        return mgLoc;
-    }
-    var dLat = transformLat(wgLoc.lng - 105.0, wgLoc.lat - 35.0);
-    var dLon = transformLon(wgLoc.lng - 105.0, wgLoc.lat - 35.0);
-
-    var radLat = wgLoc.lat / 180.0 * pi;
-    var magic = Math.sin(radLat);
-    magic = 1 - ee * magic * magic;
-    var sqrtMagic = Math.sqrt(magic);
-    dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * pi);
-    dLon = (dLon * 180.0) / (a / sqrtMagic * Math.cos(radLat) * pi);
-    mgLoc.lat = wgLoc.lat + dLat;
-    mgLoc.lng = wgLoc.lng + dLon;
-
-    return mgLoc;
-}
-
-//使用方法 
-/*var wgloc={};
-wgloc.lat=data[i].lat;//纬度
-wgloc.lng=data[i].lon;//经度
-var lat=transformFromWGSToGCJ(wgloc).lat;
-var lng=transformFromWGSToGCJ(wgloc).lng;*/

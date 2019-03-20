@@ -24,7 +24,10 @@
                     	  homePage:'11',// 当前显示的菜单id
                     	  menu:[{text:'系统管理',// 主菜单
                     	  items:[
-                    	         {id:'11',text:'呼叫信息管理',href:'${ctx}/admin/callInfo/callInfoList'}
+                    	  		 {id:'11',text:'短信记录管理',href:'${ctx}/admin/sms/smsList'},
+                    	         {id:'12',text:'GPS数据管理',href:'${ctx}/admin/gps/gpsList'},
+                    	         {id:'13',text:'呼叫信息管理',href:'${ctx}/admin/callInfo/callInfoList'},
+                    	         {id:'14',text:'地图信息',href:'${ctx}/test'}
                     	         ]}]}
 					];
         new PageUtil.MainPage({

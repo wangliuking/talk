@@ -44,13 +44,13 @@
         	<td>${callInfo.endTime?string("yyyy-MM-dd HH:mm:ss")}</td>
         	<td>${callInfo.endReason}</td>
         	<#if session_user.browserType=="IE">
-        	<td><a href="javascript:void(0)" onclick="aClick('${callInfo.filePath?substring(44)}')">打开</a></td>
+        	<td><a href="javascript:void(0)" onclick="aClick('${callInfo.filePath?substring(43)}')">打开</a></td>
         	<#elseif session_user.browserType=="360">
-        	<td><a href="javascript:void(0)" onclick="aClick('${callInfo.filePath?substring(44)}')">打开</a></td>
+        	<td><a href="javascript:void(0)" onclick="aClick('${callInfo.filePath?substring(43)}')">打开</a></td>
         	<#else>
-        	<td><audio src="${ctx}/${callInfo.filePath?substring(44)}" controls>您的浏览器不支持此播放功能</audio></td>
+        	<td><audio src="${ctx}/${callInfo.filePath?substring(43)}" controls>您的浏览器不支持此播放功能</audio></td>
         	</#if>
-        	<td><a href="${ctx}/download?downloadId=${callInfo.filePath?substring(44)}">下载</a></td>
+        	<td><a href="${ctx}/download?downloadId=${callInfo.filePath?substring(43)}">下载</a></td>
         	<#if person=="admin">
             <td><a href="${ctx}/admin/callInfo/delete?id=${callInfo.id}">删除</a></td>
             <#elseif person!="admin">

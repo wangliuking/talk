@@ -218,17 +218,20 @@ public class User2GroupController {
 		if(countId==0){
 			int result = user2groupService.save(params);	
 			if(result>0){
-				// 发起udp通知交换中心操作
-				byte[] commandId = new byte[2];
-				commandId[0]=1;
-				commandId[1]=4;
-				PublicCallProtobuf.STDbUser2GroupSync.Builder pub = PublicCallProtobuf.STDbUser2GroupSync
-						.newBuilder();
-				pub.setUserId(userId);
-				pub.setGroupId("batchUser2Group");
-				pub.setOperation(1);
-				byte[] content = pub.build().toByteArray();
-				UDPTest.sendOperation(commandId,content);
+				for(int i=0;i<list.size();i++){
+					String groupId = list.get(i);
+					// 发起udp通知交换中心操作
+					byte[] commandId = new byte[2];
+					commandId[0]=1;
+					commandId[1]=4;
+					PublicCallProtobuf.STDbUser2GroupSync.Builder pub = PublicCallProtobuf.STDbUser2GroupSync
+							.newBuilder();
+					pub.setUserId(userId);
+					pub.setGroupId(groupId);
+					pub.setOperation(1);
+					byte[] content = pub.build().toByteArray();
+					UDPTest.sendOperation(commandId,content);
+				}
 				map.put("tip", "添加成功");
 				map.put("status", 0);
 			}else{
