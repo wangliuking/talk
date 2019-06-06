@@ -47,6 +47,8 @@
         	<td><a href="javascript:void(0)" onclick="aClick('${callInfo.filePath?substring(43)}')">打开</a></td>
         	<#elseif session_user.browserType=="360">
         	<td><a href="javascript:void(0)" onclick="aClick('${callInfo.filePath?substring(43)}')">打开</a></td>
+            <#elseif callInfo.callType==2>
+        	<td><a href="javascript:void(0)" onclick="aClick('${callInfo.filePath?substring(43)}')">视频</a></td>
         	<#else>
         	<td><audio src="${ctx}/${callInfo.filePath?substring(43)}" controls>您的浏览器不支持此播放功能</audio></td>
         	</#if>

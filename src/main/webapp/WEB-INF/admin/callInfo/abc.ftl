@@ -8,8 +8,8 @@
 <script type="text/javascript" src="${ctx}/js/jquery-migrate-1.2.1.js"></script>
 </head>
 <body>
-<object id="player" height=280 width=400 classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" title="双击播放器屏幕可以全屏">
-<embed src="${ctx}/${filePathSound}" autoold=true loop=1 hidden=false type="audio/x-wav" height=240 width=340 controls=smallconsole align="middle">
+<object id="player" height=600 width=1000 classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" title="双击播放器屏幕可以全屏">
+<embed src="${ctx}/${filePathSound}" autoold=true loop=1 hidden=false type="audio/x-wav" height=580 width=960 controls=smallconsole align="middle">
 </embed>
 <param name="AutoStart" value="1">
 <!-- 是否自动播放 -->
