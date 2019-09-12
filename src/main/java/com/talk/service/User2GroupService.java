@@ -34,6 +34,10 @@ public interface User2GroupService {
 	 */
 	public int save(Map<String,Object> params);
 	/**
+	 * 批量开户时添加用户和组关系
+	 */
+	public int batchSave(Map<String,Object> params);
+	/**
 	 * 删除用户和组的关联
 	 */
 	public int delete(Map<String,String> params);

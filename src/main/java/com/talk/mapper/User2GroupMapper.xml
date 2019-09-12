@@ -27,6 +27,13 @@
        		(#{userId},#{item})  
 		</foreach>
 	</insert>
+	<!-- 批量开户时添加用户和组关系 -->
+	<insert id="batchSave" parameterType="map">
+		insert into table_user2group(userId,groupId) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.userId},#{item.groupId})
+		</foreach>
+	</insert>
 	<!-- 修改用户和组的关联 -->
 	<update id="update">
 		update table_user2group set userId=#{userId},groupId=#{groupId} where userId=#{updateUserId} and groupId=#{updateGroupId}

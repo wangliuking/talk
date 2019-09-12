@@ -675,8 +675,8 @@ seajs._config = {
   /**
    * References:
    *  - http://unixpapa.com/js/dyna.html
-   *  - ../test/research/load-js-css/test.html
-   *  - ../test/issues/load-css/test.html
+   *  - ../test/research/load-js-css/flv.ftl
+   *  - ../test/issues/load-css/flv.ftl
    *  - http://www.blaze.io/technical/ies-premature-execution-problem/
    */
 

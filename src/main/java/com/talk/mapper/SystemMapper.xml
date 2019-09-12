@@ -32,7 +32,7 @@
 		update table_system set callTime=#{callTime},pttOnTime=#{pttOnTime},pttSilentTime=#{pttSilentTime},gpsReportInterval=#{gpsReportInterval},
 		appHeartInterval=#{appHeartInterval},audioHeartInterval=#{audioHeartInterval},tcpListenPort=#{tcpListenPort},appVoicePort=#{appVoicePort},
 		bdId=#{bdId},bdListenPort=#{bdListenPort},bdVoicePort=#{bdVoicePort},gpsServerPort=#{gpsServerPort},
-		dbSynPort=#{dbSynPort},g729RecPath=#{g729RecPath},wavRecPath=#{wavRecPath}
+		dbSynPort=#{dbSynPort},videoRecPath=#{videoRecPath},wavRecPath=#{wavRecPath},videoUrlPrefix=#{videoUrlPrefix}
 	</update>
 
 	<!-- 定义ResultMap -->
@@ -51,7 +51,8 @@
 		<result column="bdVoicePort" property="bdVoicePort"/>
 		<result column="gpsServerPort" property="gpsServerPort"/>
 		<result column="dbSynPort" property="dbSynPort"/>
-		<result column="g729RecPath" property="g729RecPath"/>
+		<result column="videoRecPath" property="videoRecPath"/>
 		<result column="wavRecPath" property="wavRecPath"/>
+		<result column="videoUrlPrefix" property="videoUrlPrefix"/>
 	</resultMap>
 </mapper>

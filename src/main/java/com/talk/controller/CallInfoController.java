@@ -91,6 +91,16 @@ public class CallInfoController {
 		data.addAttribute("filePathSound",filePathSound);
 		return "callInfo/abc";
 	}
+
+	/**
+	 * 弹窗视频播放
+	 */
+	@RequestMapping("/flv")
+	public String flv(HttpServletRequest req,Model data){
+		String filePathSound = req.getParameter("filePath");
+		data.addAttribute("filePathSound",filePathSound);
+		return "callInfo/flv";
+	}
 	
 	
 }

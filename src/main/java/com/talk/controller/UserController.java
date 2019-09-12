@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -62,9 +58,7 @@ public class UserController {
 
 	/**
 	 * 分页查询用户（ajax模式）
-	 * 
-	 * @param user
-	 * @param data
+	 *
 	 * @return
 	 */
 	@RequestMapping(value="/userList",method = RequestMethod.GET)
@@ -97,8 +91,7 @@ public class UserController {
 
 	/**
 	 * 删除操作
-	 * 
-	 * @param id
+	 *
 	 * @return
 	 */
 	@RequestMapping("/delete")
@@ -143,8 +136,7 @@ public class UserController {
 
 	/**
 	 * 跳转到编辑页面
-	 * 
-	 * @param id
+	 *
 	 * @param data
 	 * @return
 	 */
@@ -289,10 +281,17 @@ public class UserController {
 	 * 超级管理员批量开户操作
 	 */
 	@RequestMapping("/insertBatch")
-	public String insertBatch(String num1,String num2,String typeInsert) {
+	@ResponseBody
+	public Map<String,Object> insertBatch(@RequestParam String num1,@RequestParam String num2,@RequestParam String typeInsert,@RequestParam("tempGroupIds[]") List<String> tempGroupIds) {
+		System.out.println("===============");
+		System.out.println(num1);
+		System.out.println(num2);
+		System.out.println(typeInsert);
+		System.out.println(tempGroupIds);
+		Map<String,Object> res = new HashMap<String,Object>();
 		int start = Integer.parseInt(num1);
 		int end = Integer.parseInt(num2);
-		if(end-start<1000){
+		if(end-start<=1000){
 			//判断是批量开户还是批量开组
 			if("0".equals(typeInsert)){
 				ArrayList<Map<String, String>> userList = new ArrayList<Map<String, String>>();
@@ -304,17 +303,46 @@ public class UserController {
 					userList.add(userMap);
 				}
 				userService.insertBatch(userList);
-				// 发起udp通知交换中心操作
-				byte[] commandId = new byte[2];
-				commandId[0] = 1;
-				commandId[1] = 2;
-				PublicCallProtobuf.STDbUserSync.Builder pub = PublicCallProtobuf.STDbUserSync
-						.newBuilder();
-				pub.setOperation(1);
-				pub.setUserId("UserBatchInsert!!!");
-				byte[] content = pub.build().toByteArray();
-				UDPTest.sendOperation(commandId, content);
-				return "exception/batchResult";
+				// 发起udp通知交换中心操作（添加用户）
+				for(Map<String,String> map : userList){
+					byte[] commandId = new byte[2];
+					commandId[0] = 1;
+					commandId[1] = 2;
+					PublicCallProtobuf.STDbUserSync.Builder pub = PublicCallProtobuf.STDbUserSync
+							.newBuilder();
+					pub.setOperation(1);
+					pub.setUserId(map.get("userId"));
+					byte[] content = pub.build().toByteArray();
+					UDPTest.sendOperation(commandId, content);
+				}
+				//批量添加用户和组关联
+				List<Map<String,String>> tempList = new LinkedList<Map<String,String>>();
+				for (int i = start; i <= end; i++) {
+					for(int j = 0 ; j < tempGroupIds.size(); j++){
+						Map<String,String> tempMap = new HashMap<String,String>();
+						tempMap.put("userId",i+"");
+						tempMap.put("groupId",tempGroupIds.get(j));
+						tempList.add(tempMap);
+					}
+				}
+				Map<String,Object> param = new HashMap<String,Object>();
+				param.put("list",tempList);
+				user2groupService.batchSave(param);
+				// 发起udp通知交换中心操作（添加用户和组关联）
+				for(Map<String,String> map : tempList){
+					byte[] commandId = new byte[2];
+					commandId[0]=1;
+					commandId[1]=4;
+					PublicCallProtobuf.STDbUser2GroupSync.Builder pub = PublicCallProtobuf.STDbUser2GroupSync
+							.newBuilder();
+					pub.setUserId(map.get("userId"));
+					pub.setGroupId(map.get("groupId"));
+					pub.setOperation(1);
+					byte[] content = pub.build().toByteArray();
+					UDPTest.sendOperation(commandId,content);
+				}
+				res.put("success",true);
+				return res;
 			}else if("1".equals(typeInsert)){
 				ArrayList<Map<String, String>> groupList = new ArrayList<Map<String, String>>();
 				Map<String, String> groupMap;
@@ -326,23 +354,27 @@ public class UserController {
 				}
 				groupService.insertBatch(groupList);
 				// 发起udp通知交换中心操作
-				byte[] commandId = new byte[2];
-				commandId[0] = 1;
-				commandId[1] = 3;
-				PublicCallProtobuf.STDbGroupSync.Builder pub = PublicCallProtobuf.STDbGroupSync
-						.newBuilder();
-				pub.setOperation(1);
-				pub.setGroupId("GroupBatchInsert!!!");				
-				byte[] content = pub.build().toByteArray();
-				UDPTest.sendOperation(commandId, content);
-				return "exception/batchResult";
+				for(Map<String,String> map : groupList){
+					byte[] commandId = new byte[2];
+					commandId[0] = 1;
+					commandId[1] = 3;
+					PublicCallProtobuf.STDbGroupSync.Builder pub = PublicCallProtobuf.STDbGroupSync
+							.newBuilder();
+					pub.setOperation(1);
+					pub.setGroupId(map.get("groupId"));
+					byte[] content = pub.build().toByteArray();
+					UDPTest.sendOperation(commandId, content);
+				}
+				res.put("success",true);
+				return res;
 			}else{
-				return "exception/numError";
+				res.put("success",false);
+				return res;
 			}
 		}else{
-			return "exception/numError";
+			res.put("success",false);
+			return res;
 		}
-		
 	}
 	/**
 	 * 导出所有用户excel文件

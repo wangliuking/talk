@@ -48,6 +48,12 @@ public class User2GroupServiceImpl implements User2GroupService{
 	}
 
 	@Override
+	public int batchSave(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return user2groupDao.batchSave(params);
+	}
+
+	@Override
 	public int delete(Map<String, String> params) {
 		// TODO Auto-generated method stub
 		return user2groupDao.delete(params);

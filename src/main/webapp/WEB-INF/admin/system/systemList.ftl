@@ -86,14 +86,15 @@
         <table class="table table-bordered table-hover definewidth m10" >
     <thead>
     <tr>
-        <th width="12%">本地局向码</th>
-        <th width="12%">本地局监听端口</th>
-        <th width="12%">本地局语音端口</th>
-        <th width="12%">gps服务端口</th>
-        <th width="12%">数据库同步端口</th>
-        <th width="12%">g729录音目录</th>
-        <th width="12%">wav录音目录</th>
-        <th width="12%">操作</th>    
+        <th width="11%">本地局向码</th>
+        <th width="11%">本地局监听端口</th>
+        <th width="11%">本地局语音端口</th>
+        <th width="11%">gps服务端口</th>
+        <th width="11%">数据库同步端口</th>
+        <th width="11%">g729录音目录</th>
+        <th width="11%">wav录音目录</th>
+        <th width="11%">录音前缀</th>
+        <th width="11%">操作</th>
     </tr>
     </thead>
     	<#if systemList??>
@@ -104,8 +105,9 @@
             <td>${system.bdVoicePort}</td>
             <td>${system.gpsServerPort}</td>
             <td>${system.dbSynPort}</td>    
-            <td>${system.g729RecPath}</td>
+            <td>${system.videoRecPath}</td>
             <td>${system.wavRecPath}</td>
+             <td>${system.videoUrlPrefix}</td>
             <#if str2=="2">
             <td><a href="${ctx}/admin/system/showUpdate">修改</a></td>
             <#elseif str2=="1">
