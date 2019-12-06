@@ -25,38 +25,38 @@
 		//前台非空验证
 		   $(function(){
 			   $('#updateUserForm').submit(function(){
-				   	var userId = $('#userId');
-				   	var userName = $('#userName');
-				   	var password = $('#password');
-				   	var authenticateCode = $('#authenticateCode');
-				   	var priority = $('#priority');
-				   	var type = $('#type');
-					var i="";
-					if($.trim(userId.val())==""){
-						i = "请输入用户Id";
-						userId.focus();
-					}else if($.trim(userName.val())==""){
-						i = "请输入用户名";
-						userName.focus();
-					}else if($.trim(password.val())==""){
-						i = "请输入登录密码";
-						password.focus();
-					}else if($.trim(authenticateCode.val())==""){
-						i = "请输入鉴权码";
-						authenticateCode.focus();
-					}else if($.trim(priority.val())==""){
-						i = "请输入优先级";
-						priority.focus();
-					}else if($.trim(type.val())==""){
-						i = "请输入用户类型";
-						type.focus();
-					}
-					if(i != ""){
-						alert(i);
-						return false;
-					}else{
-						return true;
-					}
+                   var userId = $('#userId');
+                   var userName = $('#userName');
+                   var password = $('#password');
+                   var authenticateCode = $('#authenticateCode');
+                   var priority = $('#priority');
+                   var type = $('#type');
+                   var i="";
+                   if($.trim(userId.val())=="" || userId.val().length > 30){
+                       i = "用户Id非法";
+                       userId.focus();
+                   }else if($.trim(userName.val())=="" || userName.val().length > 50){
+                       i = "用户名非法";
+                       userName.focus();
+                   }else if($.trim(password.val())=="" || password.val().length > 30){
+                       i = "登录密码非法";
+                       password.focus();
+                   }else if($.trim(authenticateCode.val())=="" || authenticateCode.val().length > 30){
+                       i = "鉴权码非法";
+                       authenticateCode.focus();
+                   }else if($.trim(priority.val())=="" || priority.val().length > 11){
+                       i = "优先级非法";
+                       priority.focus();
+                   }else if($.trim(type.val())=="" || type.val().length > 11){
+                       i = "用户类型非法";
+                       type.focus();
+                   }
+                   if(i != ""){
+                       alert(i);
+                       return false;
+                   }else{
+                       return true;
+                   }
 			   });
 		   });
 	</script>
@@ -88,12 +88,12 @@
     <tr>
         <td width="30%" class="tableleft">优先级</td>
         <td>
-       		<input type="text" name="priority" value="${user.priority}" id="priority"/>
+       		<input type="text" name="priority" value="${user.priority}" id="priority" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
         </td>
     </tr>
     <tr>
         <td width="30%" class="tableleft">用户类型</td>
-        <td><input type="text" name="type" value="${user.type}" id="type"/></td>
+        <td><input type="text" name="type" value="${user.type}" id="type" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/></td>
     </tr>
     <tr>
         <td class="tableleft"></td>

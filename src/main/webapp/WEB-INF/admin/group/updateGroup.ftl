@@ -21,38 +21,38 @@
     	 	
     	 	$(function(){
   			   $('#updateGroupForm').submit(function(){
-  				   	var groupId = $('#groupId');
- 				   	var groupName = $('#groupName');
- 				   	var type = $('#type');
- 				   	var pttSilentTime = $('#pttSilentTime');
- 				   	var callTime = $('#callTime');
- 				   	var pttOnTime = $('#pttOnTime');
- 					var i="";
- 					if($.trim(groupId.val())==""){
- 						i = "请输入组Id";
- 						groupId.focus();
- 					}else if($.trim(groupName.val())==""){
- 						i = "请输入组名";
- 						groupName.focus();
- 					}else if($.trim(type.val())==""){
- 						i = "请输入组类型";
- 						type.focus();
- 					}else if($.trim(pttSilentTime.val())==""){
- 						i = "请输入PTT静默时长";
- 						pttSilentTime.focus();
- 					}else if($.trim(callTime.val())==""){
- 						i = "请输入通话时间限定";
- 						callTime.focus();
- 					}else if($.trim(pttOnTime.val())==""){
- 						i = "请输入单次PTT授权最长时间";
- 						pttOnTime.focus();
- 					}
- 					if(i != ""){
- 						alert(i);
- 						return false;
- 					}else{
- 						return true;
- 					}
+                   var groupId = $('#groupId');
+                   var groupName = $('#groupName');
+                   var type = $('#type');
+                   var pttSilentTime = $('#pttSilentTime');
+                   var callTime = $('#callTime');
+                   var pttOnTime = $('#pttOnTime');
+                   var i="";
+                   if($.trim(groupId.val())=="" || groupId.val().length>30){
+                       i = "组Id非法";
+                       groupId.focus();
+                   }else if($.trim(groupName.val())=="" || groupName.val().length>50){
+                       i = "组名非法";
+                       groupName.focus();
+                   }else if($.trim(type.val())=="" || type.val().length>11){
+                       i = "组类型非法";
+                       type.focus();
+                   }else if($.trim(pttSilentTime.val())=="" || pttSilentTime.val().length>11){
+                       i = "PTT静默时长非法";
+                       pttSilentTime.focus();
+                   }else if($.trim(callTime.val())=="" || callTime.val().length>11){
+                       i = "通话时间限定非法";
+                       callTime.focus();
+                   }else if($.trim(pttOnTime.val())=="" || pttOnTime.val().length>11){
+                       i = "单次PTT授权最长时间非法";
+                       pttOnTime.focus();
+                   }
+                   if(i != ""){
+                       alert(i);
+                       return false;
+                   }else{
+                       return true;
+                   }
   			   });
   		   });
 		</script>

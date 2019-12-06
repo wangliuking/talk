@@ -13,7 +13,7 @@
 -->
 <#macro pager pageIndex pageSize recordCount toURL>  
   <#-- 定义局部变量pageCount保存总页数 -->
-  <#assign pageCount=((recordCount + pageSize - 1) / pageSize)?int>  
+  <#assign pageCount=((recordCount + pageSize - 1) / pageSize)?int>
   <#if recordCount==0><#return/></#if>
 	<#-- 输出分页样式 -->
 	<style type="text/css">
@@ -26,8 +26,8 @@
 	<#-- 控制JS代码 -->
 	<script type="text/javascript">
 	  function toPage(index){
-	    if(index > ${pageCount}){
-	    	index = ${pageCount};
+	    if(index > ${(pageCount)?c}){
+	    	index = ${(pageCount)?c};
 	    }
 	    if(index < 1){
 	    	index = 1;
@@ -47,12 +47,12 @@
 <#-- 输出分页表单 -->
 <div class="pagination">
 <form id="pagerForm" method="POST">
-<input type="hidden" id="pageIndex" name="pageIndex" value="${pageIndex}"/>
+<input type="hidden" id="pageIndex" name="pageIndex" value="${(pageIndex)?c}"/>
 <#-- 上一页处理 -->
 <#if (pageIndex == 1)>
 <span class="disabled">&laquo;&nbsp;上一页</span>
 <#else>
-<a href="javascript:void(0);" onclick="toPage(${pageIndex - 1})">&laquo;&nbsp;上一页</a>
+<a href="javascript:void(0);" onclick="toPage(${(pageIndex - 1)?c})">&laquo;&nbsp;上一页</a>
 </#if>
 <#-- 如果前面页数过多,显示... -->
 <#assign start=1>
@@ -68,9 +68,9 @@
 </#if>
 <#list start..end as i>
 <#if (pageIndex == i)>
-	<span class="current">${i}</span>
+	<span class="current">${(i)?c}</span>
 <#else>
- 	<a href="javascript:void(0);" onclick="toPage(${i})">${i}</a>      
+ 	<a href="javascript:void(0);" onclick="toPage(${(i)?c})">${(i)?c}</a>
 </#if>
 </#list>
 <#-- 如果后面页数过多,显示... -->
@@ -78,16 +78,16 @@
 &hellip;
 </#if>
 <#if (end lt pageCount - 1)>
-	<a href="javascript:void(0);" onclick="toPage(${pageCount - 1})">${pageCount-1}</a>
+	<a href="javascript:void(0);" onclick="toPage(${(pageCount - 1)?c})">${(pageCount-1)?c}</a>
 </#if>
 <#if (end lt pageCount)>
-	<a href="javascript:void(0);" onclick="toPage(${pageCount})">${pageCount}</a>
+	<a href="javascript:void(0);" onclick="toPage(${(pageCount)?c})">${(pageCount)?c}</a>
 </#if>
 <#-- 下一页处理 -->
 <#if (pageIndex == pageCount)>
 	<span class="disabled">下一页&nbsp;&raquo;</span>
 <#else>
-	<a href="javascript:void(0);" onclick="toPage(${pageIndex + 1})">下一页&nbsp;&raquo;</a>
+	<a href="javascript:void(0);" onclick="toPage(${(pageIndex + 1)?c})">下一页&nbsp;&raquo;</a>
 </#if>
 </form>
 </div> 

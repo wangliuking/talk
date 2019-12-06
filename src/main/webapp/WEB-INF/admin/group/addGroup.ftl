@@ -29,23 +29,23 @@
  				   	var callTime = $('#callTime');
  				   	var pttOnTime = $('#pttOnTime');
  					var i="";
- 					if($.trim(groupId.val())==""){
- 						i = "请输入组Id";
+ 					if($.trim(groupId.val())=="" || groupId.val().length>30){
+ 						i = "组Id非法";
  						groupId.focus();
- 					}else if($.trim(groupName.val())==""){
- 						i = "请输入组名";
+ 					}else if($.trim(groupName.val())=="" || groupName.val().length>50){
+ 						i = "组名非法";
  						groupName.focus();
- 					}else if($.trim(type.val())==""){
- 						i = "请输入组类型";
+ 					}else if($.trim(type.val())=="" || type.val().length>11){
+ 						i = "组类型非法";
  						type.focus();
- 					}else if($.trim(pttSilentTime.val())==""){
- 						i = "请输入PTT静默时长";
+ 					}else if($.trim(pttSilentTime.val())=="" || pttSilentTime.val().length>11){
+ 						i = "PTT静默时长非法";
  						pttSilentTime.focus();
- 					}else if($.trim(callTime.val())==""){
- 						i = "请输入通话时间限定";
+ 					}else if($.trim(callTime.val())=="" || callTime.val().length>11){
+ 						i = "通话时间限定非法";
  						callTime.focus();
- 					}else if($.trim(pttOnTime.val())==""){
- 						i = "请输入单次PTT授权最长时间";
+ 					}else if($.trim(pttOnTime.val())=="" || pttOnTime.val().length>11){
+ 						i = "单次PTT授权最长时间非法";
  						pttOnTime.focus();
  					}
  					if(i != ""){
@@ -71,19 +71,19 @@
 		        </tr>
 		        <tr>
 		        	<td width="30%" class="tableleft">类型</td>
-		            <td><input type="text" name="type" id="type"/></td>
+		            <td><input type="text" name="type" id="type" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/></td>
 		        </tr>
 		        <tr>
 		        	<td width="30%" class="tableleft">PTT静默时长</td>
-		            <td><input type="text" name="pttSilentTime" id="pttSilentTime"/></td>
+		            <td><input type="text" name="pttSilentTime" id="pttSilentTime" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/></td>
 		        </tr>
 		        <tr>
 		        	<td width="30%" class="tableleft">一次呼叫总得通话时间限定</td>
-		            <td><input type="text" name="callTime" id="callTime"/></td>
+		            <td><input type="text" name="callTime" id="callTime" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/></td>
 		        </tr>
 		        <tr>
 		        	<td width="30%" class="tableleft">单次PTT授权最长时间</td>
-		            <td><input type="text" name="pttOnTime" id="pttOnTime"/></td>
+		            <td><input type="text" name="pttOnTime" id="pttOnTime" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/></td>
 		        </tr>
 		         <tr>
 		        	<td>
